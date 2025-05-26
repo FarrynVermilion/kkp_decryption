@@ -124,6 +124,28 @@ fn main() {
         (result.get(0).unwrap().clone(),ciphertext)
     }
 
+    // fungsi ubah input char ke byte
+    fn convert_input_value_to_bytes(debugging: bool, values: Vec<String>) -> Vec<Vec<u8>> {
+        let mut result:Vec<Vec<u8>>  = Vec::new();
+        for value in values {
+            let mut bytes = value.as_bytes().to_vec();
+            let size = if bytes.len()%16 == 0 {0} else {16 - (value.len() % 16)};
+            bytes.resize(bytes.len() + size, 0);
+            
+            if debugging == true {
+                println!("\nValue: {}", value);
+                println!("Length: {}", bytes.len());
+                println!("size added: {}", size);
+                for (index,byte) in bytes.iter().enumerate() {
+                    println!("index: {index} \tByte: {byte:?} \thex: {byte:x} \tbit: {byte:08b} \tascii: {ch}",ch=*byte as char);
+                }
+            }
+
+            result.push(bytes);
+        }
+        result
+    }
+
     // fungsi kelompokin bytes ke array 4x4
     fn split_byte_array_to_an_array_of_4x4_matrix(debugging: bool, bytes_array: Vec<u8>) -> Vec<[[u8;4]; 4]> {
         let mut result=Vec::new();
@@ -511,14 +533,15 @@ fn main() {
 
     // take input
     let take_input = take_input(not_with_value);
-    print!("\ninput: {take_input:#?}\n");
+    // print!("\ninput: {take_input:#?}\n");
 
     // // split key with its plain text array
-    // let key = bytes_array.get(0).unwrap();
-    // let data_array = bytes_array.iter().skip(1).collect::<Vec<_>>();
-
+    let  ( key,data_array) = take_input;
+    let key_bytes = convert_input_value_to_bytes(debugging, vec![key]);
+    let key_matrix = split_byte_array_to_an_array_of_4x4_matrix(debugging, key_bytes[0].to_vec());
+    print!("\nkey: {key_matrix:#?}\n");
     // // create round key
-    // let rkeys = key_expansion(debugging,key.to_vec()).iter().copied().rev().collect::<Vec<_>>();
+    let rkeys = key_expansion(debugging, key_bytes[0].clone()).iter().copied().rev().collect::<Vec<_>>();
 
     // //  encrpted data
     // let mut plaintext = Vec::new();

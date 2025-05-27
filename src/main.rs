@@ -19,68 +19,68 @@ fn main() {
                 result.extend(vec![
                     "12345678123456781234567812345678".to_string(),
                     r#"
-                    { "cyphertext" : 
+                    { "cyphertext" : [
                         [
                             [
                                 [
-                                    [187, 69, 226, 187], 
-                                    [101, 15, 148, 230], 
-                                    [37, 54, 175, 55], 
-                                    [180, 83, 144, 7]
+                                    [70, 80, 93, 131], 
+                                    [209, 202, 246, 198], 
+                                    [241, 172, 85, 29], 
+                                    [29, 124, 242, 46]
                                 ], 
                                 [
-                                    [115, 145, 84, 33], 
-                                    [50, 197, 95, 87], 
-                                    [192, 181, 211, 25], 
-                                    [232, 38, 112, 20]
+                                    [67, 251, 158, 127], 
+                                    [128, 205, 26, 200], 
+                                    [121, 131, 74, 141], 
+                                    [239, 30, 115, 150]
                                 ], 
                                 [
-                                    [76, 193, 16, 155], 
-                                    [188, 149, 11, 113], 
-                                    [110, 32, 244, 47], 
-                                    [21, 165, 250, 151]
+                                    [120, 58, 104, 49], 
+                                    [205, 245, 224, 195], 
+                                    [90, 240, 203, 209], 
+                                    [133, 207, 34, 159]
                                 ]
                             ], 
                             [
                                 [
-                                    [249, 138, 254, 51],
-                                    [142, 253, 16, 1], 
-                                    [164, 19, 55, 123], 
-                                    [49, 94, 25, 166]
+                                    [145, 112, 163, 138], 
+                                    [118, 197, 191, 183], 
+                                    [172, 64, 193, 53], 
+                                    [22, 110, 148, 20]
                                 ], 
                                 [
-                                    [188, 112, 175, 120], 
-                                    [187, 49, 183, 142], 
-                                    [18, 91, 0, 102], 
-                                    [188, 124, 2, 62]
+                                    [12, 155, 238, 49], 
+                                    [62, 142, 18, 245], 
+                                    [156, 130, 210, 102], 
+                                    [21, 90, 135, 128]
                                 ], 
                                 [
-                                    [174, 89, 158, 56], 
-                                    [205, 223, 111, 46], 
-                                    [164, 45, 218, 49], 
-                                    [55, 66, 237, 57]
+                                    [230, 213, 63, 184], 
+                                    [237, 71, 181, 243], 
+                                    [167, 42, 1, 175], 
+                                    [36, 54, 135, 23]
                                 ], 
                                 [
-                                    [115, 13, 250, 235], 
-                                    [237, 26, 124, 82], 
-                                    [255, 76, 51, 201], 
-                                    [94, 90, 61, 50]
+                                    [117, 28, 200, 45],
+                                    [147, 97, 109, 82], 
+                                    [41, 40, 107, 168], 
+                                    [59, 175, 141, 16]
                                 ], 
                                 [
-                                    [51, 203, 238, 179], 
-                                    [42, 15, 197, 135], 
-                                    [54, 136, 196, 85], 
-                                    [104, 20, 230, 205]
+                                    [41, 205, 45, 145], 
+                                    [178, 209, 106, 72],
+                                    [72, 103, 84, 148], 
+                                    [113, 53, 114, 132]
                                 ], 
                                 [
-                                    [211, 7, 164, 255], 
-                                    [30, 134, 7, 40], 
-                                    [135, 36, 170, 80], 
-                                    [154, 175, 31, 229]
+                                    [158, 71, 78, 6], 
+                                    [19, 250, 152, 202], 
+                                    [38, 127, 5, 115], 
+                                    [151, 18, 156, 50]
                                 ]
                             ]
                         ]
-                    }"#.to_string()
+                    ]}"#.to_string()
                 ]);
             }
         }
@@ -105,18 +105,23 @@ fn main() {
             for i in json.get("cyphertext").iter().by_ref() {
                 
                 for j in i.as_array().unwrap().iter() {
-                    let mut matrix= Vec::new();
+                    
                     // println!("{:?}",j.as_array().unwrap().len());
                     for k in j.as_array().unwrap().iter() {
-                        let mut arr:[[u8;4];4]=[[0;4];4];
-                        for (index,matrix) in k.as_array().unwrap().iter().enumerate() {
-                            for (index2,byte) in matrix.as_array().unwrap().iter().enumerate() {
-                                arr[index][index2] = byte.as_u64().unwrap() as u8;
+                        let mut matrix= Vec::new();
+                        for matrixs in k.as_array().unwrap().iter() {
+                            let mut arr:[[u8;4];4]=[[0;4];4];
+                            for (index2,matrix) in matrixs.as_array().unwrap().iter().enumerate() {
+                                // arr[index2][index] = byte.as_u64().unwrap() as u8;
+                                for (index3,byte) in matrix.as_array().unwrap().iter().enumerate() {
+                                    arr[index2][index3] = byte.as_u64().unwrap() as u8;
+                                }
                             }
+                            matrix.push(arr);
                         }
-                        matrix.push(arr);
+
+                        ciphertext.push(matrix);
                     }
-                    ciphertext.push(matrix);
                 }
             }
         }
@@ -482,7 +487,7 @@ fn main() {
   
     }
     // fungsi enkripsi data matric 4x4 dengan rkey 4x4 balikin 4x4 yang sudah dienkripsi
-    fn decryption(debugging: bool, mut matrix: [[u8; 4]; 4], rkeys: Vec<[[u8; 4]; 4]>) -> [[u8; 4]; 4] {
+    fn encryption(debugging: bool, mut matrix: [[u8; 4]; 4], rkeys: Vec<[[u8; 4]; 4]>) -> [[u8; 4]; 4] {
         // iterasi per rkey
         for (i,rkey) in rkeys.iter().enumerate() {
             // proses awal
@@ -524,12 +529,41 @@ fn main() {
         }
         matrix
     }
+    // fungsi enkripsi data matric 4x4 dengan rkey 4x4 balikin 4x4 yang sudah dienkripsi
+    fn decryption(debugging: bool, mut matrix: [[u8; 4]; 4], rkeys: Vec<[[u8; 4]; 4]>) -> [[u8; 4]; 4] {
+        // Initial add_round_key
+        matrix = add_round_key(matrix, rkeys[0]);
+        // 13 main rounds
+        for i in 1..(rkeys.len() - 1) {
+            // Inverse ShiftRows
+            matrix = inverse_shift_rows(matrix);
+            // Inverse SubBytes
+            for x in 0..4 {
+                for y in 0..4 {
+                    matrix[x][y] = inverse_sbox(debugging, matrix[x][y]);
+                }
+            }
+            // AddRoundKey
+            matrix = add_round_key(matrix, rkeys[i]);
+            // Inverse MixColumns
+            matrix = inverse_mix_columns(debugging, matrix);
+        }
+        // Final round (no Inverse MixColumns)
+        matrix = inverse_shift_rows(matrix);
+        for x in 0..4 {
+            for y in 0..4 {
+                matrix[x][y] = inverse_sbox(debugging, matrix[x][y]);
+            }
+        }
+        matrix = add_round_key(matrix, rkeys[rkeys.len() - 1]);
+        matrix
+    }
 
     // This is the main program that executes process
     // change value for debugging
     // this is default value
-    let debugging = true;
-    let not_with_value = true;
+    let debugging = false;
+    let not_with_value = false;
 
     // take input
     let take_input = take_input(not_with_value);
@@ -543,36 +577,38 @@ fn main() {
     // // create round key
     let rkeys = key_expansion(debugging, key_bytes[0].clone()).iter().copied().rev().collect::<Vec<_>>();
 
-    // //  encrpted data
-    // let mut plaintext = Vec::new();
-    // // iterate over each arg
-    // for (index,data) in data_array.iter().enumerate() {
-    //     //arg will be split to an array of 4x4 matrix
-    //     if debugging == true {
-    //         println!("\ndata: {index:?}");
-    //     }
-    //     let matrix_blocking = split_byte_array_to_an_array_of_4x4_matrix(debugging,data.to_vec());
-    //     let mut decrypted = Vec::new();
-    //     for matrix in matrix_blocking {
-    //         let decryption_result = decryption(debugging,matrix,rkeys.clone());
-    //         decrypted.push(decryption_result);
-    //     }
-    //     plaintext.push(decrypted);
-    // }
+    print!("\nrkeys: {rkeys:#?}\n");
+    print!("\ndata_array: {data_array:#?}\n");
+    //  encrpted data
+    let mut plaintext = Vec::new();
+    // iterate over each arg
+    for (index,data) in data_array.iter().enumerate() {
+        //arg will be split to an array of 4x4 matrix
+        if debugging == true {
+            println!("\ndata: {index:?}");
+        }
 
-    // // print result dalam json
-    // let begin = r#"{"#;
-    // let end = r#"}"#;
-    // // let koma = r#","#;
-    // print!("{begin} \"cyphertext\" : ");
-    // // for (index,data) in encrypted_data_array.iter().enumerate() {
-    // //     if index==encrypted_data_array.len()-1{
-    // //         print!("{data:?}");
-    // //     }
-    // //     else{
-    // //         print!("{data:?},");
-    // //     }
-    // // }
-    // print!("{plaintext:?}",);
-    // print!("{end}");
+        let mut decrypted = Vec::new();
+        for matrix in data.to_vec() {
+            let decryption_result = decryption(debugging,matrix,rkeys.clone());
+            decrypted.push(decryption_result);
+        }
+        plaintext.push(decrypted);
+    }
+
+    let mut result_array = Vec::new();
+    for (index,data) in plaintext.iter().enumerate() {
+        let mut result = String::new();
+        for matrix in data.iter() {
+            for i in 0..4 {
+                for j in 0..4 {
+                    result.push(matrix[j][i] as char)
+                }
+            }
+        }
+        result_array.push(result);
+    }
+    for res in result_array {
+        println!("{:?}\n",res.trim_matches(char::from(0)).to_string());
+    }
 }

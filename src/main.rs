@@ -19,7 +19,7 @@ fn main() {
                 result.extend(vec![
                     "12345678123456781234567812345678".to_string(),
                     r#"
-                    { "cyphertext" : [
+                    { "cyphertext" : 
                         [
                             [
                                 [
@@ -80,7 +80,7 @@ fn main() {
                                 ]
                             ]
                         ]
-                    ]}"#.to_string()
+                    }"#.to_string()
                 ]);
             }
         }
@@ -105,23 +105,18 @@ fn main() {
             for i in json.get("cyphertext").iter().by_ref() {
                 
                 for j in i.as_array().unwrap().iter() {
-                    
-                    // println!("{:?}",j.as_array().unwrap().len());
+                    let mut data= Vec::new();
+                    // // println!("{:?}",j.as_array().unwrap().len());
                     for k in j.as_array().unwrap().iter() {
-                        let mut matrix= Vec::new();
-                        for matrixs in k.as_array().unwrap().iter() {
-                            let mut arr:[[u8;4];4]=[[0;4];4];
-                            for (index2,matrix) in matrixs.as_array().unwrap().iter().enumerate() {
-                                // arr[index2][index] = byte.as_u64().unwrap() as u8;
-                                for (index3,byte) in matrix.as_array().unwrap().iter().enumerate() {
-                                    arr[index2][index3] = byte.as_u64().unwrap() as u8;
-                                }
+                        let mut matrix = [[0;4];4];
+                        for (index1,row) in k.as_array().unwrap().iter().enumerate() {
+                            for (index2,byte) in row.as_array().unwrap().iter().enumerate() {
+                                matrix[index1][index2] = byte.as_u64().unwrap() as u8;
                             }
-                            matrix.push(arr);
                         }
-
-                        ciphertext.push(matrix);
+                        data.push(matrix);
                     }
+                    ciphertext.push(data);
                 }
             }
         }
@@ -148,31 +143,6 @@ fn main() {
 
             result.push(bytes);
         }
-        result
-    }
-
-    // fungsi kelompokin bytes ke array 4x4
-    fn split_byte_array_to_an_array_of_4x4_matrix(debugging: bool, bytes_array: Vec<u8>) -> Vec<[[u8;4]; 4]> {
-        let mut result=Vec::new();
-        let array_matrix = bytes_array.chunks(16).collect::<Vec<_>>();
-        for matrix in array_matrix {
-            let mut matrix_2d = [[0;4]; 4];
-            for i in 0..4 {
-                for j in 0..4 {
-                    matrix_2d[j][i] = matrix[i*4 + j];
-                }
-            }
-            result.push(matrix_2d);
-        }
-        if debugging == true {
-            for (index,matrix) in result.iter().copied().enumerate() {
-                println!("\nplain text matrix ke : {}",index+1);
-                for i in 0..4 {
-                    println!("{:?}",matrix[i]);
-                }
-            }
-        }
-
         result
     }
 
@@ -369,23 +339,7 @@ fn main() {
         }
         sub_data
     }
-    // shift rows per baris
-    fn shift_rows(matrix: [[u8; 4]; 4]) -> [[u8; 4]; 4] {
-        let mut result=[[0;4];4];
-        for x in 0..4 {
-            let (a,b)=matrix[x].split_at(x);
-            let mut y = 0;
-            for i in 0..b.len(){
-                result[x][y]=b[i];
-                y+=1;
-            }
-            for i in 0..a.len(){
-                result[x][y]=a[i];
-                y+=1;
-            }
-        }
-        result
-    }
+
     // shift rows per baris
     fn inverse_shift_rows(matrix: [[u8; 4]; 4]) -> [[u8; 4]; 4] {
         let mut result=[[0;4];4];
@@ -403,38 +357,7 @@ fn main() {
         }
         result
     }
-    // prosose mix column
-    fn mix_columns(debugging: bool,matrix:[[u8; 4]; 4]) -> [[u8; 4]; 4] {
-        let mut result=[[0u8; 4]; 4];
-        let matrix_multiplication: [[u8; 4]; 4] = [
-            [0x02, 0x03, 0x01, 0x01],
-            [0x01, 0x02, 0x03, 0x01],
-            [0x01, 0x01, 0x02, 0x03],
-            [0x03, 0x01, 0x01, 0x02]
-        ];
-        for x in 0..4 {
-            for y in 0..4 {
-                for z in 0..4 {
-                    let gf = gf258(matrix_multiplication[x][z] as u16,matrix[z][y] as u16);
-                    let res = result[x][y]^gf;
-                    if debugging==true{
-                        println!("________________________________________________________________________");
-                        println!("matrix[{x}][{z}]\t\t\t:{m:08b} {m:x}",m=matrix[x][z]);
-                        println!("matrix_multiplication[{z}][{y}]\t:{m:08b} {m:x}",m=matrix_multiplication[z][y]);
-                        println!("gf258\t\t\t\t:{:08b}",gf);
-                        println!("awal[{x}][{y}]\t\t\t:{:08b}",result[x][y]);
-                        println!("xor\t\t\t\t:{:08b}",res);
-                        
-                    }
-                    result[x][y] = res;
-                    if debugging==true{
-                        println!("stored[{x}][{y}]\t\t\t:{:08b}",result[x][y]);
-                    }
-                }
-            }
-        }
-        result
-    }
+    
     // prosose mix column
     fn inverse_mix_columns(debugging: bool,matrix:[[u8; 4]; 4]) -> [[u8; 4]; 4] {
         let mut result=[[0u8; 4]; 4];
@@ -486,49 +409,7 @@ fn main() {
         m as u8
   
     }
-    // fungsi enkripsi data matric 4x4 dengan rkey 4x4 balikin 4x4 yang sudah dienkripsi
-    fn encryption(debugging: bool, mut matrix: [[u8; 4]; 4], rkeys: Vec<[[u8; 4]; 4]>) -> [[u8; 4]; 4] {
-        // iterasi per rkey
-        for (i,rkey) in rkeys.iter().enumerate() {
-            // proses awal
-            if i==0||i==1{
-                // proses add round key
-                matrix = add_round_key(matrix,*rkey);
-            }
-            // proses last round
-            else if i==rkeys.len()-1 {
-                // proses substitution box
-                for x in 0..4 {
-                    for y in 0..4 {
-                        matrix[x][y] = substitution_box(debugging,matrix[x][y]);
-                    }
-                }
-                // proses shift rows
-                matrix = shift_rows(matrix);
-                // proses mix column
-                matrix = add_round_key(matrix,*rkey);
-            // proses standar
-            }else{
-                // proses substitution box
-                for x in 0..4 {
-                    for y in 0..4 {
-                        matrix[x][y] = substitution_box(debugging,matrix[x][y]);
-                    }
-                }
-                // proses shift rows
-                matrix = shift_rows(matrix);
-                // proses mix column
-                matrix = mix_columns(debugging,matrix);
-                // proses add round key
-                matrix = add_round_key(matrix,*rkey);
-            }
-            if debugging == true {
-                println!("round {i}:\n{matrix:#?}\n");
-                println!("round key {i}:\n{rkey:#?}\n");
-            }
-        }
-        matrix
-    }
+    
     // fungsi enkripsi data matric 4x4 dengan rkey 4x4 balikin 4x4 yang sudah dienkripsi
     fn decryption(debugging: bool, mut matrix: [[u8; 4]; 4], rkeys: Vec<[[u8; 4]; 4]>) -> [[u8; 4]; 4] {
         // Initial add_round_key
@@ -572,13 +453,9 @@ fn main() {
     // // split key with its plain text array
     let  ( key,data_array) = take_input;
     let key_bytes = convert_input_value_to_bytes(debugging, vec![key]);
-    let key_matrix = split_byte_array_to_an_array_of_4x4_matrix(debugging, key_bytes[0].to_vec());
-    print!("\nkey: {key_matrix:#?}\n");
     // // create round key
     let rkeys = key_expansion(debugging, key_bytes[0].clone()).iter().copied().rev().collect::<Vec<_>>();
 
-    print!("\nrkeys: {rkeys:#?}\n");
-    print!("\ndata_array: {data_array:#?}\n");
     //  encrpted data
     let mut plaintext = Vec::new();
     // iterate over each arg
@@ -597,7 +474,7 @@ fn main() {
     }
 
     let mut result_array = Vec::new();
-    for (index,data) in plaintext.iter().enumerate() {
+    for data in plaintext.iter() {
         let mut result = String::new();
         for matrix in data.iter() {
             for i in 0..4 {
@@ -609,6 +486,6 @@ fn main() {
         result_array.push(result);
     }
     for res in result_array {
-        println!("{:?}\n",res.trim_matches(char::from(0)).to_string());
+        println!("{:?}",res.trim_matches(char::from(0)).to_string());
     }
 }

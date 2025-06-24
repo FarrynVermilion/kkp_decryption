@@ -396,12 +396,13 @@ fn main() {
     fn decryption(debugging: bool, mut matrix: [[u8; 4]; 4], rkeys: Vec<[[u8; 4]; 4]>) -> [[u8; 4]; 4] {
         // Initial add_round_key
         matrix = add_round_key(matrix, rkeys[0]);
+
+        matrix = inverse_shift_rows(matrix);
         for x in 0..4 {
             for y in 0..4 {
                 matrix[x][y] = inverse_sbox(debugging, matrix[x][y]);
             }
         }
-        matrix = inverse_shift_rows(matrix);
         
         // 13 main rounds
         for i in 1..(rkeys.len() - 1) {

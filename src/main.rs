@@ -396,28 +396,31 @@ fn main() {
     fn decryption(debugging: bool, mut matrix: [[u8; 4]; 4], rkeys: Vec<[[u8; 4]; 4]>) -> [[u8; 4]; 4] {
         // Initial add_round_key
         matrix = add_round_key(matrix, rkeys[0]);
+        for x in 0..4 {
+            for y in 0..4 {
+                matrix[x][y] = inverse_sbox(debugging, matrix[x][y]);
+            }
+        }
+        matrix = inverse_shift_rows(matrix);
+        
         // 13 main rounds
         for i in 1..(rkeys.len() - 1) {
-            // Inverse ShiftRows
-            matrix = inverse_shift_rows(matrix);
+
+            // AddRoundKey
+            matrix = add_round_key(matrix, rkeys[i]);
+            // Inverse MixColumns
+            matrix = inverse_mix_columns(debugging, matrix);
             // Inverse SubBytes
             for x in 0..4 {
                 for y in 0..4 {
                     matrix[x][y] = inverse_sbox(debugging, matrix[x][y]);
                 }
             }
-            // AddRoundKey
-            matrix = add_round_key(matrix, rkeys[i]);
-            // Inverse MixColumns
-            matrix = inverse_mix_columns(debugging, matrix);
+            // Inverse ShiftRows
+            matrix = inverse_shift_rows(matrix);
+            
         }
         // Final round (no Inverse MixColumns)
-        matrix = inverse_shift_rows(matrix);
-        for x in 0..4 {
-            for y in 0..4 {
-                matrix[x][y] = inverse_sbox(debugging, matrix[x][y]);
-            }
-        }
         matrix = add_round_key(matrix, rkeys[rkeys.len() - 1]);
         matrix
     }
@@ -425,8 +428,8 @@ fn main() {
     // This is the main program that executes process
     // change value for debugging
     // this is default value
-    let debugging = false;
-    let not_with_value = false;
+    let debugging = true;
+    let not_with_value = true;
 
     // take input
     let take_input = take_input(not_with_value);

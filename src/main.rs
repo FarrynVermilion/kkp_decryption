@@ -411,14 +411,15 @@ fn main() {
             matrix = add_round_key(matrix, rkeys[i]);
             // Inverse MixColumns
             matrix = inverse_mix_columns(debugging, matrix);
+            
+            // Inverse ShiftRows
+            matrix = inverse_shift_rows(matrix);
             // Inverse SubBytes
             for x in 0..4 {
                 for y in 0..4 {
                     matrix[x][y] = inverse_sbox(debugging, matrix[x][y]);
                 }
             }
-            // Inverse ShiftRows
-            matrix = inverse_shift_rows(matrix);
             
         }
         // Final round (no Inverse MixColumns)

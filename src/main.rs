@@ -94,11 +94,11 @@ fn main() {
                     let mut prev_matrix = [[0;8]; 4];
                     for x in 0..4 {
                         prev_matrix[x] = [&rkey[i*2-2][x][..],&rkey[i*2-1][x][..]].concat().try_into().unwrap();
-                        if debugging == true {
-                            println!("________________________________________________________________________");
-                            println!("rkey:{prev_matrix:?}");
-                        }   
                     }
+                    if debugging == true {
+                        println!("________________________________________________________________________");
+                        println!("rkey:{prev_matrix:?}");
+                    }  
                     // buat oprasi matrix per kolom beda beda
                     for y in 0..8 {
                         let mut xor_arr = [0;4];

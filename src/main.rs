@@ -97,7 +97,7 @@ fn main() {
                     }
                     if debugging == true {
                         println!("________________________________________________________________________");
-                        println!("rkey:{prev_matrix:?}");
+                        println!("prev_matrix:{prev_matrix:?}");
                     }  
                     // buat oprasi matrix per kolom beda beda
                     for y in 0..8 {

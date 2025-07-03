@@ -19,66 +19,7 @@ fn main() {
                 result.extend(vec![
                     "12345678123456781234567812345678".to_string(),
                     r#"
-                    [
-                        [
-                            [
-                                [70, 80, 93, 131], 
-                                [209, 202, 246, 198], 
-                                [241, 172, 85, 29], 
-                                [29, 124, 242, 46]
-                            ], 
-                            [
-                                [67, 251, 158, 127], 
-                                [128, 205, 26, 200], 
-                                [121, 131, 74, 141], 
-                                [239, 30, 115, 150]
-                            ], 
-                            [
-                                [120, 58, 104, 49], 
-                                [205, 245, 224, 195], 
-                                [90, 240, 203, 209], 
-                                [133, 207, 34, 159]
-                            ]
-                        ], 
-                        [
-                            [
-                                [145, 112, 163, 138], 
-                                [118, 197, 191, 183], 
-                                [172, 64, 193, 53], 
-                                [22, 110, 148, 20]
-                            ], 
-                            [
-                                [12, 155, 238, 49], 
-                                [62, 142, 18, 245], 
-                                [156, 130, 210, 102], 
-                                [21, 90, 135, 128]
-                            ], 
-                            [
-                                [230, 213, 63, 184], 
-                                [237, 71, 181, 243], 
-                                [167, 42, 1, 175], 
-                                [36, 54, 135, 23]
-                            ], 
-                            [
-                                [117, 28, 200, 45],
-                                [147, 97, 109, 82], 
-                                [41, 40, 107, 168], 
-                                [59, 175, 141, 16]
-                            ], 
-                            [
-                                [41, 205, 45, 145], 
-                                [178, 209, 106, 72],
-                                [72, 103, 84, 148], 
-                                [113, 53, 114, 132]
-                            ], 
-                            [
-                                [158, 71, 78, 6], 
-                                [19, 250, 152, 202], 
-                                [38, 127, 5, 115], 
-                                [151, 18, 156, 50]
-                            ]
-                        ]
-                    ]
+                    [[[[201, 185, 223, 168], [96, 165, 174, 212], [104, 234, 174, 244], [139, 116, 64, 139]], [[220, 176, 208, 238], [122, 36, 192, 136], [67, 32, 105, 41], [133, 245, 163, 137]], [[21, 7, 238, 209], [99, 45, 174, 19], [130, 12, 67, 2], [171, 176, 113, 60]]], [[[145, 151, 201, 12], [69, 99, 247, 35], [143, 86, 142, 253], [148, 113, 81, 205]], [[185, 59, 167, 191], [28, 24, 75, 178], [34, 134, 242, 27], [162, 251, 185, 137]], [[55, 145, 57, 187], [14, 3, 179, 197], [19, 241, 90, 252], [146, 80, 87, 42]], [[76, 15, 96, 33], [235, 117, 157, 130], [12, 141, 199, 222], [13, 62, 195, 148]], [[163, 73, 244, 240], [192, 62, 103, 118], [241, 189, 204, 14], [119, 166, 28, 202]], [[148, 42, 59, 221], [233, 235, 47, 208], [123, 79, 214, 61], [29, 59, 72, 83]]]]
                     "#.to_string()
                 ]);
             }
@@ -153,6 +94,10 @@ fn main() {
                     let mut prev_matrix = [[0;8]; 4];
                     for x in 0..4 {
                         prev_matrix[x] = [&rkey[i*2-2][x][..],&rkey[i*2-1][x][..]].concat().try_into().unwrap();
+                        if debugging == true {
+                            println!("________________________________________________________________________");
+                            println!("rkey:{prev_matrix:?}");
+                        }   
                     }
                     // buat oprasi matrix per kolom beda beda
                     for y in 0..8 {
@@ -161,7 +106,7 @@ fn main() {
                         if y == 0 {
                             let sub_data = {
                                 let mut sub_data:[u8;4]=[0;4];
-                                let shifted =shift_columns(debugging, [prev_matrix[0][0],prev_matrix[1][0],prev_matrix[2][2],prev_matrix[3][0]]);
+                                let shifted =shift_columns(debugging, [prev_matrix[0][7],prev_matrix[1][7],prev_matrix[2][7],prev_matrix[3][7]]);
                                 for x in 0..4 {
                                     sub_data[x]=substitution_box(debugging, shifted[x]);
                                 }
@@ -171,6 +116,7 @@ fn main() {
                                 if x==0{
                                     xor_arr[x] = sub_data[x] ^ rcon[i-1];
                                     if debugging == true {
+                                        println!("________________________________________________________________________");
                                         println!("rcon\t: dec :{rc:?}\tbit:{rc:08b}", rc=rcon[i-1]);
                                     }
                                 }else {
@@ -178,6 +124,7 @@ fn main() {
                                 }
                                 if debugging == true {
                                     println!("sub_data\t: dec:{sd:?}\tbit:{sd:08b}", sd=sub_data[x]);
+                                    println!("xor_arr\t: dec:{sd:?}\tbit:{sd:08b}", sd=xor_arr[x]);
                                 }
                             }
                         // kolom 5 hanya s box
@@ -191,16 +138,18 @@ fn main() {
                                 xor_arr[x] = prev_matrix[x][y-1];
                             }
                         }
+
                         // proses xor hasil di taro di prev matrix
                         for x in 0..4 {
                             if debugging == true {
+                                println!("________________________________________________________________________");
                                 println!("prev_matrix\t: dec:{p:?}\tbit:{p:08b}", p=prev_matrix[x][y]);
                             }
                             
                             prev_matrix[x][y] = xor_arr[x] ^ prev_matrix[x][y];
                             if debugging == true {
-                                println!("xor_arr\t: {:08b}", xor_arr[x]);
-                                println!("current\t: dec:{p:?}\tbit:{p:08b}", p=prev_matrix[x][y]);
+                                println!("xor_arr\t: dec:{x:?}\tbit:{x:08b}", x=xor_arr[x]);
+                                println!("current \t: dec:{p:?}\tbit:{p:08b}", p=prev_matrix[x][y]);
                             }
                             
                         }
@@ -222,6 +171,7 @@ fn main() {
         }
         // print rkey
         if debugging == true {
+            println!("________________________________________________________________________");
             println!("RCON: {rcon:?}");
             for (index,matrix) in rkey.iter().copied().enumerate() {
                 println!("\nkey matrix ke : {index}");
@@ -237,18 +187,25 @@ fn main() {
     fn shift_columns(debugging: bool, word: [u8; 4])->[u8; 4] {
         let shifted= [word[1], word[2], word[3], word[0]];
         if debugging == true {
+            println!("________________________________________________________________________");
             println!("orgin\t:{word:?}");
             println!("altered\t:{shifted:?}");
         }
         shifted
     }
     // perkalian matrix xor round key dengan matrix
-    fn add_round_key( matrix: [[u8;4]; 4], key: [[u8;4]; 4])->[[u8;4]; 4] {
+    fn add_round_key(debugging: bool, matrix: [[u8;4]; 4], key: [[u8;4]; 4])->[[u8;4]; 4] {
         let mut result = [[0;4]; 4];
         for x in 0..4 {
             for y in 0..4 {
                 result[x][y] = matrix[x][y] ^ key[x][y];
             }
+        }
+        if debugging == true {
+            println!("________________________________________________________________________");
+            println!("matrix\t:{matrix:?}");
+            println!("key\t:{key:?}");
+            println!("result\t:{result:?}");
         }
         result
     }
@@ -280,6 +237,7 @@ fn main() {
         // ambil data substitution box
         let sub_data=sbox[base16][mod16];
         if debugging==true{
+            println!("________________________________________________________________________");
             println!("orgin\t\t:hex:{data:x}\t: dec:{data:?}");
             println!("baris\t\t:{base16:x}");
             println!("kolom\t\t:{mod16:x}");
@@ -314,6 +272,7 @@ fn main() {
         // ambil data substitution box
         let sub_data=inverse_sbox[base16][mod16];
         if debugging==true{
+            println!("________________________________________________________________________");
             println!("orgin\t\t:hex:{data:x}\t: dec:{data:?}");
             println!("baris\t\t:{base16:x}");
             println!("kolom\t\t:{mod16:x}");
@@ -323,7 +282,7 @@ fn main() {
     }
 
     // shift rows per baris
-    fn inverse_shift_rows(matrix: [[u8; 4]; 4]) -> [[u8; 4]; 4] {
+    fn inverse_shift_rows(debugging: bool,matrix: [[u8; 4]; 4]) -> [[u8; 4]; 4] {
         let mut result=[[0;4];4];
         for x in 0..4 {
             let (a,b)=matrix[x].split_at(4-x);
@@ -336,6 +295,11 @@ fn main() {
                 result[x][y]=a[i];
                 y+=1;
             }
+        }
+        if debugging==true{
+            println!("________________________________________________________________________");
+            println!("matrix\t:{matrix:?}");
+            println!("result\t:{result:?}");
         }
         result
     }
@@ -395,9 +359,9 @@ fn main() {
     // fungsi enkripsi data matric 4x4 dengan rkey 4x4 balikin 4x4 yang sudah dienkripsi
     fn decryption(debugging: bool, mut matrix: [[u8; 4]; 4], rkeys: Vec<[[u8; 4]; 4]>) -> [[u8; 4]; 4] {
         // Initial add_round_key
-        matrix = add_round_key(matrix, rkeys[0]);
+        matrix = add_round_key(debugging,matrix, rkeys[0]);
 
-        matrix = inverse_shift_rows(matrix);
+        matrix = inverse_shift_rows(debugging,matrix);
         for x in 0..4 {
             for y in 0..4 {
                 matrix[x][y] = inverse_sbox(debugging, matrix[x][y]);
@@ -406,14 +370,12 @@ fn main() {
         
         // 13 main rounds
         for i in 1..(rkeys.len() - 1) {
-
             // AddRoundKey
-            matrix = add_round_key(matrix, rkeys[i]);
+            matrix = add_round_key(debugging,matrix, rkeys[i]);
             // Inverse MixColumns
             matrix = inverse_mix_columns(debugging, matrix);
-            
             // Inverse ShiftRows
-            matrix = inverse_shift_rows(matrix);
+            matrix = inverse_shift_rows(debugging,matrix);
             // Inverse SubBytes
             for x in 0..4 {
                 for y in 0..4 {
@@ -423,7 +385,7 @@ fn main() {
             
         }
         // Final round (no Inverse MixColumns)
-        matrix = add_round_key(matrix, rkeys[rkeys.len() - 1]);
+        matrix = add_round_key(debugging,matrix, rkeys[rkeys.len() - 1]);
         matrix
     }
 

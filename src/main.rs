@@ -324,14 +324,14 @@ fn main() {
                         println!("________________________________________________________________________");
                         println!("matrix[{x}][{z}]\t\t\t:{m:08b} {m:x}",m=matrix[x][z]);
                         println!("inverse_matrix_multiplication[{z}][{y}]\t:{m:08b} {m:x}",m=inverse_matrix_multiplication[z][y]);
-                        println!("gf258\t\t\t\t:{:08b}",gf);
-                        println!("awal[{x}][{y}]\t\t\t:{:08b}",result[x][y]);
-                        println!("xor\t\t\t\t:{:08b}",res);
+                        println!("gf256\t\t\t\t:{g:08b} {g:x}",g=gf);
+                        println!("awal[{x}][{y}]\t\t\t:{a:08b} {a:x}",a=result[x][y]);
+                        println!("xor\t\t\t\t:{r:08b} {r:x}",r=res);
                         
                     }
                     result[x][y] = res;
                     if debugging==true{
-                        println!("stored[{x}][{y}]\t\t\t:{:08b}",result[x][y]);
+                        println!("stored[{x}][{y}]\t\t\t:{r:08b} {r:x}",r=result[x][y]);
                     }
                 }
             }
@@ -354,7 +354,6 @@ fn main() {
             y = y << 1
         }
         m as u8
-  
     }
     
     // fungsi enkripsi data matric 4x4 dengan rkey 4x4 balikin 4x4 yang sudah dienkripsi

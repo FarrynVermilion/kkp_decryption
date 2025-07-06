@@ -242,7 +242,7 @@ fn main() {
             println!("orgin\t\t:hex:{data:x}\t: dec:{data:?}");
             println!("baris\t\t:{base16:x}");
             println!("kolom\t\t:{mod16:x}");
-            println!("sub data\t:hex:{sub_data:x} dec:{sub_data:?}");
+            println!("sub data\t:hex:{sub_data:x}: dec:{sub_data:?}");
         }
         sub_data
         
@@ -277,7 +277,7 @@ fn main() {
             println!("orgin\t\t:hex:{data:x}\t: dec:{data:?}");
             println!("baris\t\t:{base16:x}");
             println!("kolom\t\t:{mod16:x}");
-            println!("sub data\t:hex:{sub_data:x} dec:{sub_data:?}");
+            println!("sub data\t:hex:{sub_data:x}: dec:{sub_data:?}");
         }
         sub_data
     }
@@ -322,17 +322,17 @@ fn main() {
                     let res = result[x][y]^gf;
                     if debugging==true{
                         println!("________________________________________________________________________");
-                        println!("matrix[{x}][{z}]\t\t\t:{m:08b}\t{m:x}\t{m}",m=matrix[x][z]);
+                        println!("matrix[{x}][{z}]\t\t\t\t:{m:08b}\t{m:x}\t{m}",m=matrix[x][z]);
                         println!("inverse_matrix_multiplication[{z}][{y}]\t:{m:08b}\t{m:x}\t{m}",m=inverse_matrix_multiplication[z][y]);
-                        println!("gf256\t\t\t\t:{g:08b}\t{g:x}\t{g}",g=gf);
-                        println!("awal[{x}][{y}]\t\t\t:{a:08b}\t{a:x}\t{a}",a=result[x][y]);
-                        println!("xor\t\t\t\t:{r:08b}\t{r:x}\t{r}",r=res);
+                        println!("gf256\t\t\t\t\t:{g:08b}\t{g:x}\t{g}",g=gf);
+                        println!("awal[{x}][{y}]\t\t\t\t:{a:08b}\t{a:x}\t{a}",a=result[x][y]);
+                        println!("xor\t\t\t\t\t:{r:08b}\t{r:x}\t{r}",r=res);
                         
                     }
                     result[x][y] = res;
                     if debugging==true{
-                        println!("stored[{x}][{y}]\t\t\t:{r:08b}\t{r:x}\t{r}",r=result[x][y]);
-                        println!("matrix akhir\t\t\t:{result:?}");
+                        println!("stored[{x}][{y}]\t\t\t\t:{r:08b}\t{r:x}\t{r}",r=result[x][y]);
+                        println!("matrix akhir\t\t\t\t:{result:?}");
                     }
                 }
             }

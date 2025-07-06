@@ -277,7 +277,7 @@ fn main() {
             println!("orgin\t\t:hex:{data:x}\t: dec:{data:?}");
             println!("baris\t\t:{base16:x}");
             println!("kolom\t\t:{mod16:x}");
-            println!("sub data\t:{sub_data:x}");
+            println!("sub data\t:hex:{sub_data:x} dec:{sub_data:?}");
         }
         sub_data
     }

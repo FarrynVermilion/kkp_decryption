@@ -322,16 +322,17 @@ fn main() {
                     let res = result[x][y]^gf;
                     if debugging==true{
                         println!("________________________________________________________________________");
-                        println!("matrix[{x}][{z}]\t\t\t:{m:08b} {m:x}",m=matrix[x][z]);
-                        println!("inverse_matrix_multiplication[{z}][{y}]\t:{m:08b} {m:x}",m=inverse_matrix_multiplication[z][y]);
-                        println!("gf256\t\t\t\t:{g:08b} {g:x}",g=gf);
-                        println!("awal[{x}][{y}]\t\t\t:{a:08b} {a:x}",a=result[x][y]);
-                        println!("xor\t\t\t\t:{r:08b} {r:x}",r=res);
+                        println!("matrix[{x}][{z}]\t\t\t:{m:08b}\t{m:x}\t{m}",m=matrix[x][z]);
+                        println!("inverse_matrix_multiplication[{z}][{y}]\t:{m:08b}\t{m:x}\t{m}",m=inverse_matrix_multiplication[z][y]);
+                        println!("gf256\t\t\t\t:{g:08b}\t{g:x}\t{g}",g=gf);
+                        println!("awal[{x}][{y}]\t\t\t:{a:08b}\t{a:x}\t{a}",a=result[x][y]);
+                        println!("xor\t\t\t\t:{r:08b}\t{r:x}\t{r}",r=res);
                         
                     }
                     result[x][y] = res;
                     if debugging==true{
-                        println!("stored[{x}][{y}]\t\t\t:{r:08b} {r:x}",r=result[x][y]);
+                        println!("stored[{x}][{y}]\t\t\t:{r:08b}\t{r:x}\t{r}",r=result[x][y]);
+                        println!("matrix akhir\t\t\t:{result:?}");
                     }
                 }
             }

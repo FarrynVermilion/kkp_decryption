@@ -107,6 +107,7 @@ fn main() {
                         if y == 0 {
                             let sub_data = {
                                 let mut sub_data:[u8;4]=[0;4];
+                                // let shifted =shift_columns(debugging, [prev_matrix[0][0],prev_matrix[1][0],prev_matrix[2][2],prev_matrix[3][0]]);
                                 let shifted =shift_columns(debugging, [prev_matrix[0][7],prev_matrix[1][7],prev_matrix[2][7],prev_matrix[3][7]]);
                                 for x in 0..4 {
                                     sub_data[x]=substitution_box(debugging, shifted[x]);

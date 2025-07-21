@@ -394,8 +394,8 @@ fn main() {
     // This is the main program that executes process
     // change value for debugging
     // this is default value
-    let debugging = true;
-    let not_with_value = true;
+    let debugging = false;
+    let not_with_value = false;
 
     // take input
     let take_input = take_input(not_with_value);

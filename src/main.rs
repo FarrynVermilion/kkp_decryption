@@ -1,6 +1,8 @@
 use std::{char, env, process::exit};
+// use std::time::Instant;
 
 fn main() {
+    // let now = Instant::now();
     // take input fungsi buat ambil input dari terminal 
     // kalo not with value true gk perlu ambil input buat debugginh aja
     fn take_input(not_with_value: bool) -> (String,Vec<Vec<[[u8;4];4]>>) {
@@ -439,4 +441,7 @@ fn main() {
     for res in result_array {
         println!("{:?}",res.trim_matches(char::from(0)).to_string());
     }
+
+    // let elapsed = now.elapsed();
+    // println!("Elapsed: {:.2?}", elapsed);
 }

@@ -344,9 +344,9 @@ fn main() {
     }
     // fungsi penghitungan irreducible polinomial
     fn gf256(mut x: u8, mut y: u8) -> u8 {
-        println!("________________________________________________________________________");
-        println!("x\t\t\t:{x:08b}\t{x:x}\t{x}",x=x);
-        println!("y\t\t\t:{y:08b}\t{y:x}\t{y}",y=y);
+        // println!("________________________________________________________________________");
+        // println!("x\t\t\t:{x:08b}\t{x:x}\t{x}",x=x);
+        // println!("y\t\t\t:{y:08b}\t{y:x}\t{y}",y=y);
         let mut result = 0u8;
         for _ in 0..8 {
             if (y & 1) != 0 {
@@ -360,7 +360,7 @@ fn main() {
             y >>= 1;
         }
         
-        println!("result\t\t\t:{result:08b}\t{result:x}\t{result}",result=result);
+        // println!("result\t\t\t:{result:08b}\t{result:x}\t{result}",result=result);
         result
     }
     

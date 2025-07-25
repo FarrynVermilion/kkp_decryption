@@ -321,7 +321,7 @@ fn main() {
         for x in 0..4 {
             for y in 0..4 {
                 for z in 0..4 {
-                    let gf = gf256(inverse_matrix_multiplication[x][z] as u16,matrix[z][y] as u16);
+                    let gf = gf256(matrix[x][z],inverse_matrix_multiplication[z][y] );
                     let res = result[x][y]^gf;
                     if debugging==true{
                         println!("________________________________________________________________________");
@@ -343,21 +343,25 @@ fn main() {
         result
     }
     // fungsi penghitungan irreducible polinomial
-    fn gf256(x:u16,mut y:u16) -> u8 {      
-        let p:u16 = 0b100011011;        
-        let mut m = 0;         
-        for _ in 0..8{
-            m = m << 1;
-            if (m & 0b100000000)!=0{
-                m = m ^ p;
+    fn gf256(mut x: u8, mut y: u8) -> u8 {
+        println!("________________________________________________________________________");
+        println!("x\t\t\t:{x:08b}\t{x:x}\t{x}",x=x);
+        println!("y\t\t\t:{y:08b}\t{y:x}\t{y}",y=y);
+        let mut result = 0u8;
+        for _ in 0..8 {
+            if (y & 1) != 0 {
+                result ^= x;
             }
-                
-            if (y & 0b010000000)!=0{
-                m = m ^ x;
+            let carry = x & 0x80;
+            x <<= 1;
+            if carry != 0 {
+                x ^= 0x1B; // 0x1B is the AES irreducible polynomial (0x11B without the leading bit)
             }
-            y = y << 1
+            y >>= 1;
         }
-        m as u8
+        
+        println!("result\t\t\t:{result:08b}\t{result:x}\t{result}",result=result);
+        result
     }
     
     // fungsi enkripsi data matric 4x4 dengan rkey 4x4 balikin 4x4 yang sudah dienkripsi
@@ -396,8 +400,8 @@ fn main() {
     // This is the main program that executes process
     // change value for debugging
     // this is default value
-    let debugging = false;
-    let not_with_value = false;
+    let debugging = true;
+    let not_with_value = true;
 
     // take input
     let take_input = take_input(not_with_value);
